@@ -48,7 +48,7 @@ if (!options.command || options.help) {
   process.exit(1)
 }
 
-function time(number, command) {
+function time(command) {
   let before = Date.now()
   cp.execSync(command)
   let after = Date.now()
@@ -74,13 +74,8 @@ function loadFormatter(name) {
 }
 
 function main() {
-  let data = R.reduce(function (result, number) {
-    let duration = time(number, options.command.join(' '))
-    return R.append(duration, result)
-  }, [], R.range(1, (options.times + 1)))
-
+  const data = R.times(_ => time(options.command.join(' ')), options.times);
   let formatter = loadFormatter(options.formatter)
-
   return formatter(data, formatterOptions[formatter.name])
 }
 
