@@ -10,7 +10,6 @@
     "chalk": "^1.1.1",
     "chart": "github:jstrace/chart",
     "command-line-args": "^2.1.3",
-    "microtime": "^2.0.0",
     "ramda": "^0.18.0",
     "sparkly": "^2.0.1"
   }

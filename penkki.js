@@ -2,11 +2,10 @@
 
 "use strict"
 
-const microtime = require('microtime'),
-          chalk = require('chalk'),
-           args = require('command-line-args'),
-             cp = require('child_process'),
-              R = require('ramda')
+const chalk = require('chalk'),
+       args = require('command-line-args'),
+         cp = require('child_process'),
+          R = require('ramda')
 
 const error = chalk.bold.red
 
@@ -50,11 +49,11 @@ if (!options.command || options.help) {
 }
 
 function time(number, command) {
-  let before = microtime.nowDouble()
+  let before = Date.now()
   cp.execSync(command)
-  let after = microtime.nowDouble()
+  let after = Date.now()
 
-  return (after - before) * 1000
+  return after - before
 }
 
 // Get the output formatter.
