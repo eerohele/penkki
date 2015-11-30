@@ -5,7 +5,7 @@
   "description": "Run a command N times and measure how long each run takes.",
   "main": "penkki.js",
   "author": "Eero Helenius",
-  "license": "ASF",
+  "license": "Apache-2.0",
   "dependencies": {
     "chalk": "^1.1.1",
     "chart": "github:jstrace/chart",
