@@ -1,0 +1,17 @@
+{
+  "name": "penkki",
+  "bin": "penkki.js",
+  "version": "0.1.0",
+  "description": "Run a command N times and measure how long each run takes.",
+  "main": "penkki.js",
+  "author": "Eero Helenius",
+  "license": "ASF",
+  "dependencies": {
+    "chalk": "^1.1.1",
+    "chart": "github:jstrace/chart",
+    "command-line-args": "^2.1.3",
+    "microtime": "^2.0.0",
+    "ramda": "^0.18.0",
+    "sparkly": "^2.0.1"
+  }
+}
