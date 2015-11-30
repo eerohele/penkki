@@ -7,15 +7,15 @@ Run a command *n* times and measure how long each run takes. Get result as JSON 
 
 #### Chart
 
-<img src="https://nw.kapsi.fi/penkki-chart.png"/>
+<img src="https://nw.kapsi.fi/penkki-chart.png" width="600px"/>
 
 #### Sparkly
 
-<img src="https://nw.kapsi.fi/penkki-sparkly.png"/>
+<img src="https://nw.kapsi.fi/penkki-sparkly.png" width="600px"/>
 
 #### JSON
 
-<img src="https://nw.kapsi.fi/penkki-json.png"/>
+<img src="https://nw.kapsi.fi/penkki-json.png" width="600px"/>
 
 ## Install
 
