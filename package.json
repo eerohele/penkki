@@ -1,7 +1,7 @@
 {
   "name": "penkki",
   "bin": "penkki.js",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Run a command N times and measure how long each run takes.",
   "main": "penkki.js",
   "author": "Eero Helenius",
