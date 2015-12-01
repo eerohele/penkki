@@ -9,6 +9,10 @@ Run a command *n* times and measure how long each run takes. Get result as JSON 
 
 <img src="https://nw.kapsi.fi/penkki-chart.png" width="600px"/>
 
+#### HTML
+
+<img src="https://nw.kapsi.fi/penkki-html.png" width="600px"/>
+
 #### Sparkly
 
 <img src="https://nw.kapsi.fi/penkki-sparkly.png" width="600px"/>
@@ -41,10 +45,12 @@ $ penkki --times 5 gradle
 
 Formatter          | Example
 -------------------|----------------------------------------------
-JSON (default)     | `penkki -t 50 my-awesome-command` 
+JSON (default)     | `penkki -t 50 my-awesome-command`
 [Chart][chart]     | `penkki -f chart -t 50 my-awesome-command`
 [Sparkly][sparkly] | `penkki -f sparkly -t 50 my-awesome-command`
+HTML ([C3][c3])    | `penkki -f html -t 50 my-awesome-command`
 
+[c3]: http://c3js.org/
 [chart]: https://github.com/jstrace/chart
 [sparkly]: https://github.com/sindresorhus/sparkly
 

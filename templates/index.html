@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+
+<html>
+   <head>
+      <meta charset="utf-8">
+      <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/c3/0.1.42/c3.css"/>
+      <style type="text/css">
+        #chart {
+          margin-top: 50px;
+        }
+
+        .tooltip {
+          font-family: Helvetica, sans-serif;
+          font-size: 8pt;
+          background: rgba(255, 255, 255, 0.8);
+          padding: 6px 6px;
+          border-radius: 50%;
+        }
+      </style>
+   </head>
+   <body>
+      <div id="chart"></div>
+      <script src="https://cdn.jsdelivr.net/d3js/3.5.10/d3.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/c3/0.1.42/c3.min.js"></script>
+
+      <script id="data">
+      </script>
+
+      <script>
+      var chart = c3.generate({
+          bindto: '#chart',
+
+          padding: {
+            top: 50
+          },
+
+          data: {
+            columns: [COLUMNS]
+          },
+
+          transition: {
+            duration: 750
+          },
+
+          axis: {
+            y: {
+              label: {
+                text: "milliseconds",
+                position: "outer-middle"
+              }
+            }
+          },
+
+          tooltip: {
+            contents:  function (d) {
+              return "<span class='tooltip'>" + d[0].value + "</span>"
+            }
+          }
+      })
+      </script>
+   </body>
+</html>

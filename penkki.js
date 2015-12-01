@@ -22,7 +22,7 @@ const cli = args([
     alias:         'f',
     type:          String,
     defaultValue:  'json',
-    description:   'The formatter to use. Either "json", "sparkly" or "chart". Default: "json".'
+    description:   'The formatter to use. Either "json", "sparkly", "chart", or "html". Default: "json".'
   },
   { name:          'times',
     alias:         't',
@@ -38,8 +38,10 @@ const cli = args([
 
 const options = cli.parse()
 
+// Every method is a function that returns the options for the given formatter.
 const formatterOptions = {
-  chart: { width: 80, height: 25 }
+  chart: () => { return { width: 80, height: 25 } },
+  html:  R.identity
 }
 
 if (!options.command || options.help) {
@@ -78,7 +80,7 @@ function main() {
   const command = options.command.join(' ')
   const data = R.times(R.partial(time, [command]), options.times)
   let formatter = loadFormatter(options.formatter)
-  return formatter(data, formatterOptions[formatter.name])
+  return formatter(data, formatterOptions[formatter.name](command))
 }
 
 console.log(main())
