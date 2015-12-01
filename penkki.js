@@ -75,7 +75,7 @@ function loadFormatter(name) {
 
 function main() {
   const command = options.command.join(' ')
-  const data = R.times(R.partial(time, [command]), options.times);
+  const data = R.times(R.partial(time, [command]), options.times)
   let formatter = loadFormatter(options.formatter)
   return formatter(data, formatterOptions[formatter.name])
 }
