@@ -66,8 +66,9 @@ function loadFormatter(name) {
   } catch (_) {
     try {
       return require(name)
-    } catch (_) {
-      console.log(`${error("ERROR:")} Couldn't find formatter "${name}".`)
+    } catch (e) {
+      console.error(`${error("ERROR:")} Couldn't load formatter "${name}":`)
+      console.error(e)
       process.exit(1)
     }
   }
