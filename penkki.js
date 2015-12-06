@@ -43,8 +43,7 @@ const options = cli.parse()
 
 // Every method is a function that returns the options for the given formatter.
 const formatterOptions = {
-  chart: () => { return { width: 80, height: 25 } },
-  html:  R.identity
+  chart:   () => { return { width: 80, height: 25 } }
 }
 
 if (!options.command || options.help) {
@@ -79,11 +78,15 @@ function loadFormatter(name) {
   }
 }
 
+function getFormatterOptions(name) {
+  return R.has(name, formatterOptions) ? formatterOptions[name] : R.identity
+}
+
 function main() {
   const command = options.command.join(' ')
   const data = R.times(R.partial(time, [command]), options.times)
   let formatter = loadFormatter(options.formatter)
-  return formatter(data, formatterOptions[formatter.name](command))
+  return formatter(data, getFormatterOptions(formatter.name)(command))
 }
 
 console.log(main())
