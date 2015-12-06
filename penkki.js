@@ -8,6 +8,7 @@ const
   process = require('process'),
   chalk   = require('chalk'),
   args    = require('command-line-args'),
+  pkg     = require('./package.json'),
   csv     = require('babyparse'),
   cp      = require('child_process'),
   R       = require('ramda')
@@ -15,7 +16,7 @@ const
 const error = message =>
   console.error(R.join(' ', [chalk.bold.red('ERROR:'), message]))
 
-const header = `${chalk.blue('Penkki')}. Run a command ${chalk.italic('n')} times and measure how long it takes.`
+const header = `${chalk.bold('Penkki')}. ${pkg.description}`
 
 const formatters = ['json', 'sparkly', 'chart', 'html']
 
@@ -115,7 +116,7 @@ function validate() {
 
 function main() {
   if (options.version) {
-    console.log(require('./package.json').version)
+    console.log(pkg.version)
     process.exit(0)
   }
 

@@ -2,7 +2,7 @@
   "name": "penkki",
   "bin": "penkki.js",
   "version": "0.3.2",
-  "description": "Run a command N times and measure how long each run takes.",
+  "description": "Benchmark one or more commands, get a rad visualization.",
   "main": "penkki.js",
   "author": "Eero Helenius",
   "license": "Apache-2.0",
