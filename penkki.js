@@ -111,12 +111,9 @@ function validate() {
 function main() {
   if (!validate()) process.exit(1)
 
-  if (options.commands) {
-    let commands = R.head(csv.parse(options.commands).data)
-    return format(R.map(command => benchmark(command), commands))
-  } else {
-    return R.pipe(benchmark, format)(R.join(' ', options.command))
-  }
+  let cmdString = options.commands || R.join(' ', options.command)
+  return format(R.map(command => benchmark(command),
+                R.head(csv.parse(cmdString).data)))
 }
 
 console.log(main())
