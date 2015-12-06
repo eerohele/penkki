@@ -18,5 +18,8 @@
   "repository": "https://github.com/eerohele/penkki",
   "devDependencies": {
     "eslint": "^1.10.3"
+  },
+  "scripts": {
+    "test": "./test.sh"
   }
 }
