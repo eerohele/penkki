@@ -30,6 +30,7 @@ const cli = args([
   { name:          'times',
     alias:         't',
     type:          Number,
+    defaultValue:  1,
     description:   'The number of times to run the command.'
   },
   { name:          'help',
