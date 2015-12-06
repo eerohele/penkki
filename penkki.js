@@ -16,7 +16,7 @@ const
 const error = message =>
   console.error(R.join(' ', [chalk.bold.red('ERROR:'), message]))
 
-const header = `${chalk.bold('Penkki')}. ${pkg.description}`
+const banner = `${chalk.bold('Penkki')}. ${pkg.description}`
 
 const formatters = ['json', 'sparkly', 'chart', 'html']
 
@@ -96,7 +96,7 @@ function format(data) {
 
 function validate() {
   if (!(options.command || options.commands) || options.help) {
-    console.log(header)
+    console.log(banner)
     console.log(cli.getUsage())
     return false
   }
