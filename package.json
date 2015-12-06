@@ -7,6 +7,7 @@
   "author": "Eero Helenius",
   "license": "Apache-2.0",
   "dependencies": {
+    "babyparse": "^0.4.3",
     "chalk": "^1.1.1",
     "chart": "github:jstrace/chart",
     "cheerio": "^0.19.0",
@@ -17,5 +18,8 @@
   "repository": "https://github.com/eerohele/penkki",
   "devDependencies": {
     "eslint": "^1.10.3"
+  },
+  "scripts": {
+    "test": "./test.sh"
   }
 }

@@ -1,7 +1,8 @@
 Penkki
 ======
 
-Run a command *n* times and measure how long each run takes. Get result as JSON or incredibly useful and staggeringly engaging visualization.
+Run one or more commands *n* times and measure how long each run takes. Get
+result as JSON or incredibly useful and staggeringly engaging visualization.
 
 ## Examples
 
@@ -31,14 +32,16 @@ $ npm install -g penkki
 
 ```bash
 # Run Gradle 5 times.
-#
-# Get the execution time of each run in milliseconds as a JSON array.
 $ penkki --times 5 gradle
-[ 1226.4869213104248,
-  1182.739019393921,
-  1135.329008102417,
-  1088.3119106292725,
-  1107.0971488952637 ]
+[ '"gradle"',
+  48527,
+  29418,
+  26333,
+  25239,
+  24540 ]
+
+# Run ls, du, and df 5 times and get the result as a C3 line chart.
+$ penkki --formatter html --times 5 --commands ls,du,df > benchmark.html
 ```
 
 ## Formatters
@@ -57,4 +60,3 @@ HTML ([C3][c3])    | `penkki -f html -t 50 my-awesome-command`
 ## License
 
 Apache License 2.0.
-

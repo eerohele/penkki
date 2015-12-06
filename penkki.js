@@ -4,15 +4,25 @@
 
 'use strict'
 
-const chalk = require('chalk'),
-  process   = require('process'),
-  args      = require('command-line-args'),
-  cp        = require('child_process'),
-  R         = require('ramda')
+const
+  process = require('process'),
+  chalk   = require('chalk'),
+  args    = require('command-line-args'),
+  csv     = require('babyparse'),
+  cp      = require('child_process'),
+  R       = require('ramda')
 
-const error = chalk.bold.red
+const error = message =>
+  console.error(R.join(' ', [chalk.bold.red('ERROR:'), message]))
 
 const header = `${chalk.blue('Penkki')}. Run a command ${chalk.italic('n')} times and measure how long it takes.`
+
+const formatters = ['json', 'sparkly', 'chart', 'html']
+
+function or(a) {
+  let head = R.pipe(R.map(v => '"' + v + '"'), R.dropLast(1), R.join(', '))(a)
+  return head + ' or, ' + R.last(a)
+}
 
 const cli = args([
   { name:          'command',
@@ -21,15 +31,21 @@ const cli = args([
     defaultOption: true,
     description:   'The command to run.'
   },
+  { name:          'commands',
+    alias:         'c',
+    type:          String,
+    description:   'A comma-separated list of commands to run.'
+  },
   { name:          'formatter',
     alias:         'f',
     type:          String,
     defaultValue:  'json',
-    description:   'The formatter to use. Either "json", "sparkly", "chart", or "html". Default: "json".'
+    description:   `The formatter to use. Either ${or(formatters)}. Default: "json".`
   },
   { name:          'times',
     alias:         't',
     type:          Number,
+    defaultValue:  1,
     description:   'The number of times to run the command.'
   },
   { name:          'help',
@@ -41,15 +57,18 @@ const cli = args([
 
 const options = cli.parse()
 
-// Every method is a function that returns the options for the given formatter.
-const formatterOptions = {
-  chart:   () => { return { width: 80, height: 25 } }
-}
-
-if (!options.command || options.help) {
-  console.log(header)
-  console.log(cli.getUsage())
-  process.exit(1)
+// Get the output formatter.
+//
+// Try to load the given formatter in the "formatters" directory. If not found,
+// try the dependencies. If still not found, throw an error.
+function loadFormatter(name) {
+  try {
+    return require('./formatters/' + name)
+  } catch (e) {
+    error(`Couldn't load formatter "${name}":`)
+    console.error(e)
+    process.exit(1)
+  }
 }
 
 function time(command) {
@@ -60,33 +79,41 @@ function time(command) {
   return after - before
 }
 
-// Get the output formatter.
-//
-// Try to load the given formatter in the "formatters" directory. If not found,
-// try the dependencies. If still not found, throw an error.
-function loadFormatter(name) {
-  try {
-    return require('./formatters/' + name)
-  } catch (_) {
-    try {
-      return require(name)
-    } catch (e) {
-      console.error(`${error('ERROR:')} Couldn't load formatter "${name}":`)
-      console.error(e)
-      process.exit(1)
-    }
-  }
+function benchmark(command) {
+  return R.prepend(JSON.stringify(command),
+         R.times(R.partial(time, [command]), options.times))
 }
 
-function getFormatterOptions(name) {
-  return R.has(name, formatterOptions) ? formatterOptions[name] : R.identity
+function format(data) {
+  return loadFormatter(options.formatter)(data)
+}
+
+function validate() {
+  if (!(options.command || options.commands) || options.help) {
+    console.log(header)
+    console.log(cli.getUsage())
+    return false
+  }
+
+  if (options.command && options.commands) {
+    error('Use either --commands or give a single command, not both.')
+    return false
+  }
+
+  if (!R.contains(options.formatter, formatters)) {
+    error(`Invalid formatter "${options.formatter}."`)
+    return false
+  }
+
+  return true
 }
 
 function main() {
-  const command = options.command.join(' ')
-  const data = R.times(R.partial(time, [command]), options.times)
-  let formatter = loadFormatter(options.formatter)
-  return formatter(data, getFormatterOptions(formatter.name)(command))
+  if (!validate()) process.exit(1)
+
+  let cmdString = options.commands || R.join(' ', options.command)
+  return format(R.map(command => benchmark(command),
+                R.head(csv.parse(cmdString, { delimiter: ',' }).data)))
 }
 
 console.log(main())
