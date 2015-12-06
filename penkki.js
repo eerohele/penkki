@@ -113,7 +113,7 @@ function main() {
 
   let cmdString = options.commands || R.join(' ', options.command)
   return format(R.map(command => benchmark(command),
-                R.head(csv.parse(cmdString).data)))
+                R.head(csv.parse(cmdString, { delimiter: ',' }).data)))
 }
 
 console.log(main())
