@@ -12,9 +12,17 @@ const
   cp      = require('child_process'),
   R       = require('ramda')
 
-const error = chalk.bold.red
+const error = message =>
+  console.error(R.join(' ', [chalk.bold.red('ERROR:'), message]))
 
 const header = `${chalk.blue('Penkki')}. Run a command ${chalk.italic('n')} times and measure how long it takes.`
+
+const formatters = ['json', 'sparkly', 'chart', 'html']
+
+function or(a) {
+  let head = R.pipe(R.map(v => '"' + v + '"'), R.dropLast(1), R.join(', '))(a)
+  return head + ' or, ' + R.last(a)
+}
 
 const cli = args([
   { name:          'command',
@@ -32,7 +40,7 @@ const cli = args([
     alias:         'f',
     type:          String,
     defaultValue:  'json',
-    description:   'The formatter to use. Either "json", "sparkly", "chart", or "html". Default: "json".'
+    description:   `The formatter to use. Either ${or(formatters)}. Default: "json".`
   },
   { name:          'times',
     alias:         't',
@@ -57,7 +65,7 @@ function loadFormatter(name) {
   try {
     return require('./formatters/' + name)
   } catch (e) {
-    console.error(`${error('ERROR:')} Couldn't load formatter "${name}":`)
+    error(`Couldn't load formatter "${name}":`)
     console.error(e)
     process.exit(1)
   }
@@ -84,17 +92,24 @@ function validate() {
   if (!(options.command || options.commands) || options.help) {
     console.log(header)
     console.log(cli.getUsage())
-    process.exit(1)
+    return false
   }
 
   if (options.command && options.commands) {
-    console.error(`${error('ERROR:')} Use either --commands or give a single command, not both.`)
-    process.exit(1)
+    error('Use either --commands or give a single command, not both.')
+    return false
   }
+
+  if (!R.contains(options.formatter, formatters)) {
+    error(`Invalid formatter "${options.formatter}."`)
+    return false
+  }
+
+  return true
 }
 
 function main() {
-  validate()
+  if (!validate()) process.exit(1)
 
   if (options.commands) {
     let commands = R.head(csv.parse(options.commands).data)
