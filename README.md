@@ -6,13 +6,13 @@ result as JSON or incredibly useful and staggeringly engaging visualization.
 
 ## Examples
 
-#### Chart
-
-<img src="https://nw.kapsi.fi/penkki-chart.png" width="600px"/>
-
 #### HTML
 
 <img src="https://nw.kapsi.fi/penkki-html.png" width="600px"/>
+
+#### Chart
+
+<img src="https://nw.kapsi.fi/penkki-chart.png" width="600px"/>
 
 #### Sparkly
 
@@ -28,7 +28,7 @@ result as JSON or incredibly useful and staggeringly engaging visualization.
 $ npm install -g penkki
 ```
 
-## Basic use
+## Examples
 
 ```bash
 # Run Gradle 5 times.
@@ -40,7 +40,8 @@ $ penkki --times 5 gradle
   25239,
   24540 ]
 
-# Run ls, du, and df 5 times and get the result as a C3 line chart.
+# Run ls, du, and df 5 times and save the resulting HTML/JS line chart
+# as benchmark.html.
 $ penkki --formatter html --times 5 --commands ls,du,df > benchmark.html
 ```
 
