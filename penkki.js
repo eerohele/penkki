@@ -52,6 +52,11 @@ const cli = args([
     alias:         'h',
     type:          Boolean,
     description:   'Show this help.'
+  },
+  { name:          'version',
+    alias:         'v',
+    type:          Boolean,
+    description:   'Show version.'
   }
 ])
 
@@ -109,6 +114,11 @@ function validate() {
 }
 
 function main() {
+  if (options.version) {
+    console.log(require('./package.json').version)
+    process.exit(0)
+  }
+
   if (!validate()) process.exit(1)
 
   let cmdString = options.commands || R.join(' ', options.command)
