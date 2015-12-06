@@ -1,15 +1,18 @@
 #!/usr/bin/env node
 
-"use strict"
+/*globals require, console*/
+
+'use strict'
 
 const chalk = require('chalk'),
-       args = require('command-line-args'),
-         cp = require('child_process'),
-          R = require('ramda')
+  process   = require('process'),
+  args      = require('command-line-args'),
+  cp        = require('child_process'),
+  R         = require('ramda')
 
 const error = chalk.bold.red
 
-const header = `${chalk.blue("Penkki")}. Run a command ${chalk.italic("n")} times and measure how long it takes.`
+const header = `${chalk.blue('Penkki')}. Run a command ${chalk.italic('n')} times and measure how long it takes.`
 
 const cli = args([
   { name:          'command',
@@ -40,8 +43,7 @@ const options = cli.parse()
 
 // Every method is a function that returns the options for the given formatter.
 const formatterOptions = {
-  chart: () => { return { width: 80, height: 25 } },
-  html:  R.identity
+  chart:   () => { return { width: 80, height: 25 } }
 }
 
 if (!options.command || options.help) {
@@ -69,18 +71,22 @@ function loadFormatter(name) {
     try {
       return require(name)
     } catch (e) {
-      console.error(`${error("ERROR:")} Couldn't load formatter "${name}":`)
+      console.error(`${error('ERROR:')} Couldn't load formatter "${name}":`)
       console.error(e)
       process.exit(1)
     }
   }
 }
 
+function getFormatterOptions(name) {
+  return R.has(name, formatterOptions) ? formatterOptions[name] : R.identity
+}
+
 function main() {
   const command = options.command.join(' ')
   const data = R.times(R.partial(time, [command]), options.times)
   let formatter = loadFormatter(options.formatter)
-  return formatter(data, formatterOptions[formatter.name](command))
+  return formatter(data, getFormatterOptions(formatter.name)(command))
 }
 
 console.log(main())
