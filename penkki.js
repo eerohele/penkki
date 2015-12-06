@@ -1,15 +1,18 @@
 #!/usr/bin/env node
 
-"use strict"
+/*globals require, console*/
+
+'use strict'
 
 const chalk = require('chalk'),
-       args = require('command-line-args'),
-         cp = require('child_process'),
-          R = require('ramda')
+  process   = require('process'),
+  args      = require('command-line-args'),
+  cp        = require('child_process'),
+  R         = require('ramda')
 
 const error = chalk.bold.red
 
-const header = `${chalk.blue("Penkki")}. Run a command ${chalk.italic("n")} times and measure how long it takes.`
+const header = `${chalk.blue('Penkki')}. Run a command ${chalk.italic('n')} times and measure how long it takes.`
 
 const cli = args([
   { name:          'command',
@@ -69,7 +72,7 @@ function loadFormatter(name) {
     try {
       return require(name)
     } catch (e) {
-      console.error(`${error("ERROR:")} Couldn't load formatter "${name}":`)
+      console.error(`${error('ERROR:')} Couldn't load formatter "${name}":`)
       console.error(e)
       process.exit(1)
     }

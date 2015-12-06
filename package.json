@@ -14,5 +14,8 @@
     "ramda": "^0.18.0",
     "sparkly": "^2.0.1"
   },
-  "repository": "https://github.com/eerohele/penkki"
+  "repository": "https://github.com/eerohele/penkki",
+  "devDependencies": {
+    "eslint": "^1.10.3"
+  }
 }
