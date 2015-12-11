@@ -20,9 +20,10 @@ const banner = `${chalk.bold('Penkki')}. ${pkg.description}`
 
 const formatters = ['json', 'sparkly', 'chart', 'html']
 
-function or(a) {
-  let head = R.pipe(R.map(v => '"' + v + '"'), R.dropLast(1), R.join(', '))(a)
-  return head + ' or, ' + R.last(a)
+function or(ary) {
+  let quoted = R.map(v => '"' + v + '"', ary)
+  let head = R.pipe(R.dropLast(1), R.join(', '))(quoted)
+  return head + ', or ' + R.last(quoted)
 }
 
 const cli = args([
