@@ -4,21 +4,22 @@
 
 'use strict'
 
-const
-  process = require('process'),
-  chalk   = require('chalk'),
-  args    = require('command-line-args'),
-  pkg     = require('./package.json'),
-  csv     = require('babyparse'),
-  cp      = require('child_process'),
-  R       = require('ramda')
+const process = require('process'),
+  chalk = require('chalk'),
+  args = require('command-line-args'),
+  path = require('path'),
+  pkg = require('./package.json'),
+  csv = require('babyparse'),
+  cp = require('child_process'),
+  fs = require('fs'),
+  R = require('ramda')
 
 const error = message =>
   console.error(R.join(' ', [chalk.bold.red('ERROR:'), message]))
 
 const banner = `${chalk.bold('Penkki')}. ${pkg.description}`
 
-const formatters = ['json', 'sparkly', 'chart', 'html']
+const formatters = R.map(file => (path.basename(file, '.js')), fs.readdirSync('./formatters'))
 
 function or(ary) {
   let quoted = R.map(v => '"' + v + '"', ary)
