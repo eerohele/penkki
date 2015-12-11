@@ -19,7 +19,9 @@ const error = message =>
 
 const banner = `${chalk.bold('Penkki')}. ${pkg.description}`
 
-const formatters = R.map(file => (path.basename(file, '.js')), fs.readdirSync('./formatters'))
+function getFormatterList() {
+  return R.map(f => (path.basename(f, '.js')), fs.readdirSync('./formatters'))
+}
 
 function or(ary) {
   let quoted = R.map(v => '"' + v + '"', ary)
@@ -43,7 +45,7 @@ const cli = args([
     alias:         'f',
     type:          String,
     defaultValue:  'json',
-    description:   `The formatter to use. Either ${or(formatters)}. Default: "json".`
+    description:   `The formatter to use. Either ${or(getFormatterList())}. Default: "json".`
   },
   { name:          'times',
     alias:         't',
@@ -108,7 +110,7 @@ function validate() {
     return false
   }
 
-  if (!R.contains(options.formatter, formatters)) {
+  if (!R.contains(options.formatter, getFormatterList())) {
     error(`Invalid formatter "${options.formatter}."`)
     return false
   }
