@@ -18,10 +18,13 @@
   },
   "repository": "https://github.com/eerohele/penkki",
   "devDependencies": {
-    "eslint": "^1.10.3"
+    "eslint": "^1.10.3",
+    "mocha": "^2.3.4",
+    "simple-mock": "^0.5.0",
+    "sleep": "^3.0.0"
   },
   "scripts": {
-    "preversion": "./test.sh",
-    "test": "./test.sh"
+    "preversion": "mocha && ./test.sh",
+    "test": "mocha && ./test.sh"
   }
 }

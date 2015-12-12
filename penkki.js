@@ -5,29 +5,25 @@
 'use strict'
 
 const process = require('process'),
+  penkki = require('./lib/penkki'),
   chalk = require('chalk'),
-  args = require('command-line-args'),
   path = require('path'),
+  args = require('command-line-args'),
   pkg = require('./package.json'),
-  csv = require('babyparse'),
-  cp = require('child_process'),
   fs = require('fs'),
   R = require('ramda')
 
-const error = message =>
-  console.error(R.join(' ', [chalk.bold.red('ERROR:'), message]))
-
-const banner = `${chalk.bold('Penkki')}. ${pkg.description}`
+function or(ary)  {
+  let quoted = R.map(v => '"' + v + '"', ary)
+  let head = R.pipe(R.dropLast(1), R.join(', '))(quoted)
+  return head + ', or ' + R.last(quoted)
+}
 
 function getFormatterList() {
   return R.map(f => (path.basename(f, '.js')), fs.readdirSync('./formatters'))
 }
 
-function or(ary) {
-  let quoted = R.map(v => '"' + v + '"', ary)
-  let head = R.pipe(R.dropLast(1), R.join(', '))(quoted)
-  return head + ', or ' + R.last(quoted)
-}
+const banner = `${chalk.bold('Penkki')}. ${pkg.description}`
 
 const cli = args([
   { name:          'command',
@@ -44,7 +40,7 @@ const cli = args([
   { name:          'formatter',
     alias:         'f',
     type:          String,
-    defaultValue:  'json',
+    defaultValue:  penkki.defaultFormatter,
     description:   `The formatter to use. Either ${or(getFormatterList())}. Default: "json".`
   },
   { name:          'times',
@@ -65,66 +61,42 @@ const cli = args([
   }
 ])
 
+const error = (message) => {
+  console.error(R.join(' ', [chalk.bold.red('ERROR:'), message]))
+}
+
 const options = cli.parse()
 
-function loadFormatter(name) {
-  try {
-    return require('./formatters/' + name)
-  } catch (e) {
-    error(`Couldn't load formatter "${name}":`)
-    console.error(e)
-    process.exit(1)
-  }
-}
-
-function time(command) {
-  let before = Date.now()
-  cp.execSync(command)
-  let after = Date.now()
-
-  return after - before
-}
-
-function benchmark(command) {
-  return R.prepend(JSON.stringify(command),
-         R.times(R.partial(time, [command]), options.times))
-}
-
-function format(data) {
-  return loadFormatter(options.formatter)(data)
-}
-
-function validate() {
-  if (!(options.command || options.commands) || options.help) {
+function validate(opts, formatterList) {
+  if (!(opts.command || opts.commands) || opts.help) {
     console.log(banner)
     console.log(cli.getUsage())
     return false
   }
 
-  if (options.command && options.commands) {
+  if (opts.command && opts.commands) {
     error('Use either --commands or give a single command, not both.')
     return false
   }
 
-  if (!R.contains(options.formatter, getFormatterList())) {
-    error(`Invalid formatter "${options.formatter}."`)
+  if (!R.contains(opts.formatter, formatterList)) {
+    error(`Invalid formatter "${opts.formatter}."`)
     return false
   }
 
   return true
 }
 
-function main() {
-  if (options.version) {
+function main(opts) {
+  if (opts.version) {
     console.log(pkg.version)
     process.exit(0)
   }
 
-  if (!validate()) process.exit(1)
+  if (!validate(opts, getFormatterList())) process.exit(1)
 
-  let cmdString = options.commands || R.join(' ', options.command)
-  return format(R.map(command => benchmark(command),
-                R.head(csv.parse(cmdString, { delimiter: ',' }).data)))
+  let cmdString = opts.commands || R.join(' ', opts.command)
+  return penkki.run(cmdString, opts)
 }
 
-console.log(main())
+console.log(main(options))

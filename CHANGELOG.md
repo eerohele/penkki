@@ -6,6 +6,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Add `bars` formatter
 - Add `--version` option
 - Update banner
+- Add unit tests
 
 ## 0.3.1 - 2015-12-06
 - No changes — fixed botched release
