@@ -7,10 +7,8 @@
 const process = require('process'),
   penkki = require('./lib/penkki'),
   chalk = require('chalk'),
-  path = require('path'),
   args = require('command-line-args'),
   pkg = require('./package.json'),
-  fs = require('fs'),
   R = require('ramda')
 
 function or(ary)  {
@@ -19,9 +17,7 @@ function or(ary)  {
   return head + ', or ' + R.last(quoted)
 }
 
-function getFormatterList() {
-  return R.map(f => (path.basename(f, '.js')), fs.readdirSync('./formatters'))
-}
+const formatters = ['bars', 'chart', 'html', 'json', 'sparkly']
 
 const banner = `${chalk.bold('Penkki')}. ${pkg.description}`
 
@@ -41,7 +37,7 @@ const cli = args([
     alias:         'f',
     type:          String,
     defaultValue:  penkki.defaultFormatter,
-    description:   `The formatter to use. Either ${or(getFormatterList())}. Default: "json".`
+    description:   `The formatter to use. Either ${or(formatters)}. Default: "json".`
   },
   { name:          'times',
     alias:         't',
@@ -93,7 +89,7 @@ function main(opts) {
     process.exit(0)
   }
 
-  if (!validate(opts, getFormatterList())) process.exit(1)
+  if (!validate(opts, formatters)) process.exit(1)
 
   let cmdString = opts.commands || R.join(' ', opts.command)
   return penkki.run(cmdString, opts)
