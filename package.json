@@ -1,13 +1,14 @@
 {
   "name": "penkki",
   "bin": "penkki.js",
-  "version": "0.3.1",
-  "description": "Run a command N times and measure how long each run takes.",
+  "version": "0.4.0",
+  "description": "Benchmark one or more commands, get a rad visualization.",
   "main": "penkki.js",
   "author": "Eero Helenius",
   "license": "Apache-2.0",
   "dependencies": {
     "babyparse": "^0.4.3",
+    "bars": "github:jstrace/bars",
     "chalk": "^1.1.1",
     "chart": "github:jstrace/chart",
     "cheerio": "^0.19.0",
@@ -17,9 +18,13 @@
   },
   "repository": "https://github.com/eerohele/penkki",
   "devDependencies": {
-    "eslint": "^1.10.3"
+    "eslint": "^1.10.3",
+    "mocha": "^2.3.4",
+    "simple-mock": "^0.5.0",
+    "sleep": "^3.0.0"
   },
   "scripts": {
-    "test": "./test.sh"
+    "preversion": "mocha && ./test.sh",
+    "test": "mocha && ./test.sh"
   }
 }

@@ -4,25 +4,26 @@
 
 'use strict'
 
-const
-  process = require('process'),
-  chalk   = require('chalk'),
-  args    = require('command-line-args'),
-  csv     = require('babyparse'),
-  cp      = require('child_process'),
-  R       = require('ramda')
+const process = require('process'),
+  penkki = require('./lib/penkki'),
+  chalk = require('chalk'),
+  path = require('path'),
+  args = require('command-line-args'),
+  pkg = require('./package.json'),
+  fs = require('fs'),
+  R = require('ramda')
 
-const error = message =>
-  console.error(R.join(' ', [chalk.bold.red('ERROR:'), message]))
-
-const header = `${chalk.blue('Penkki')}. Run a command ${chalk.italic('n')} times and measure how long it takes.`
-
-const formatters = ['json', 'sparkly', 'chart', 'html']
-
-function or(a) {
-  let head = R.pipe(R.map(v => '"' + v + '"'), R.dropLast(1), R.join(', '))(a)
-  return head + ' or, ' + R.last(a)
+function or(ary)  {
+  let quoted = R.map(v => '"' + v + '"', ary)
+  let head = R.pipe(R.dropLast(1), R.join(', '))(quoted)
+  return head + ', or ' + R.last(quoted)
 }
+
+function getFormatterList() {
+  return R.map(f => (path.basename(f, '.js')), fs.readdirSync('./formatters'))
+}
+
+const banner = `${chalk.bold('Penkki')}. ${pkg.description}`
 
 const cli = args([
   { name:          'command',
@@ -39,8 +40,8 @@ const cli = args([
   { name:          'formatter',
     alias:         'f',
     type:          String,
-    defaultValue:  'json',
-    description:   `The formatter to use. Either ${or(formatters)}. Default: "json".`
+    defaultValue:  penkki.defaultFormatter,
+    description:   `The formatter to use. Either ${or(getFormatterList())}. Default: "json".`
   },
   { name:          'times',
     alias:         't',
@@ -52,68 +53,50 @@ const cli = args([
     alias:         'h',
     type:          Boolean,
     description:   'Show this help.'
+  },
+  { name:          'version',
+    alias:         'v',
+    type:          Boolean,
+    description:   'Show version.'
   }
 ])
 
+const error = (message) => {
+  console.error(R.join(' ', [chalk.bold.red('ERROR:'), message]))
+}
+
 const options = cli.parse()
 
-// Get the output formatter.
-//
-// Try to load the given formatter in the "formatters" directory. If not found,
-// try the dependencies. If still not found, throw an error.
-function loadFormatter(name) {
-  try {
-    return require('./formatters/' + name)
-  } catch (e) {
-    error(`Couldn't load formatter "${name}":`)
-    console.error(e)
-    process.exit(1)
-  }
-}
-
-function time(command) {
-  let before = Date.now()
-  cp.execSync(command)
-  let after = Date.now()
-
-  return after - before
-}
-
-function benchmark(command) {
-  return R.prepend(JSON.stringify(command),
-         R.times(R.partial(time, [command]), options.times))
-}
-
-function format(data) {
-  return loadFormatter(options.formatter)(data)
-}
-
-function validate() {
-  if (!(options.command || options.commands) || options.help) {
-    console.log(header)
+function validate(opts, formatterList) {
+  if (!(opts.command || opts.commands) || opts.help) {
+    console.log(banner)
     console.log(cli.getUsage())
     return false
   }
 
-  if (options.command && options.commands) {
+  if (opts.command && opts.commands) {
     error('Use either --commands or give a single command, not both.')
     return false
   }
 
-  if (!R.contains(options.formatter, formatters)) {
-    error(`Invalid formatter "${options.formatter}."`)
+  if (!R.contains(opts.formatter, formatterList)) {
+    error(`Invalid formatter "${opts.formatter}."`)
     return false
   }
 
   return true
 }
 
-function main() {
-  if (!validate()) process.exit(1)
+function main(opts) {
+  if (opts.version) {
+    console.log(pkg.version)
+    process.exit(0)
+  }
 
-  let cmdString = options.commands || R.join(' ', options.command)
-  return format(R.map(command => benchmark(command),
-                R.head(csv.parse(cmdString, { delimiter: ',' }).data)))
+  if (!validate(opts, getFormatterList())) process.exit(1)
+
+  let cmdString = opts.commands || R.join(' ', opts.command)
+  return penkki.run(cmdString, opts)
 }
 
-console.log(main())
+console.log(main(options))
