@@ -1,9 +1,8 @@
 'use strict'
 
-const
-  cheerio = require('cheerio'),
-  path    = require('path'),
-  fs      = require('fs')
+const cheerio = require('cheerio'),
+  path = require('path'),
+  fs = require('fs')
 
 module.exports = html
 
