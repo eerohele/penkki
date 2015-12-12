@@ -52,9 +52,11 @@ Formatter          | Example
 JSON (default)     | `penkki -t 50 my-awesome-command`
 [Chart][chart]     | `penkki -f chart -t 50 my-awesome-command`
 [Sparkly][sparkly] | `penkki -f sparkly -t 50 my-awesome-command`
+[Bars][bars]       | `penkki -f bars -t 50 my-awesome-command`
 HTML ([C3][c3])    | `penkki -f html -t 50 my-awesome-command`
 
 [c3]: http://c3js.org/
+[bars]: https://github.com/jstrace/bars
 [chart]: https://github.com/jstrace/chart
 [sparkly]: https://github.com/sindresorhus/sparkly
 
