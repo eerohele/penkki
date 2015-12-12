@@ -33,3 +33,9 @@ check penkki -t 2 -f sparkly -c ls,df,du
 check penkki -t 2 -f html -c ls,df,du
 check penkki -t 2 -f json -c ls,df,du
 check penkki -t 2 -f bars -c ls,df,du
+
+# outside script dir
+
+pushd "$HOME" > /dev/null
+check penkki ls
+popd > /dev/null
