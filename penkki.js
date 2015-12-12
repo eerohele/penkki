@@ -67,10 +67,6 @@ const cli = args([
 
 const options = cli.parse()
 
-// Get the output formatter.
-//
-// Try to load the given formatter in the "formatters" directory. If not found,
-// try the dependencies. If still not found, throw an error.
 function loadFormatter(name) {
   try {
     return require('./formatters/' + name)
