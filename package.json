@@ -1,7 +1,7 @@
 {
   "name": "penkki",
   "bin": "penkki.js",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "Benchmark one or more commands, get a rad visualization.",
   "main": "penkki.js",
   "keywords": [
