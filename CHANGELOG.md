@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.5.0 - 2016-01-11
+- Add table with mean, median, and variance into HTML output
+- Add footer to HTML output
+
 ## 0.4.3 - 2015-12-18
 - Fix HTML chart tooltip
 

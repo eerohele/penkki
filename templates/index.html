@@ -3,23 +3,78 @@
 <html>
    <head>
       <meta charset="utf-8">
-      <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/c3/0.1.42/c3.css"/>
+      <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/c3/0.1.42/c3.css">
       <style type="text/css">
+        body {
+          color: #333;
+          font-family: 'Helvetica Neue', Helvetica, sans-serif;
+          text-align: center;
+        }
+
+        table {
+          font-size: .8rem;
+          margin: 0 auto;
+          margin-top: 5em;
+          margin-bottom: 5em;
+        }
+
+        thead {
+          color: #444;
+        }
+
+        tbody th {
+          font-family: "Monaco", "Consolas", monospace;
+          font-weight: normal;
+          text-align: right;
+        }
+
+        td, th {
+          padding: 0 1em;
+        }
+
+        .value:after {
+          color: #999;
+          content: 'ms';
+        }
+
         #chart {
           margin-top: 50px;
         }
 
-        .tooltip {
-          font-family: Helvetica, sans-serif;
-          font-size: 8pt;
-          background: rgba(255, 255, 255, 0.8);
-          padding: 6px 6px;
-          border-radius: 50%;
+        footer {
+          color: #666;
+          font-size: .65rem;
+          position: fixed;
+          bottom: 0;
+          right: 1em;
+        }
+
+        footer a {
+          color: #999;
         }
       </style>
    </head>
    <body>
       <div id="chart"></div>
+
+      <table>
+        <thead>
+          <tr>
+            <th/>
+            <th>Mean</th>
+            <th>Median</th>
+            <th>Variance</th>
+          </tr>
+        </thead>
+
+        <tbody id="tbody">
+        </tbody>
+      </table>
+
+      <footer>
+        <p>generated with <a href="https://www.npmjs.com/package/penkki">penkki</a></p>
+      </footer>
+
       <script src="https://cdn.jsdelivr.net/d3js/3.5.10/d3.min.js"></script>
       <script src="https://cdn.jsdelivr.net/c3/0.1.42/c3.min.js"></script>
 
@@ -27,30 +82,84 @@
       </script>
 
       <script>
-      var chart = c3.generate({
-          bindto: '#chart',
+        var chart = c3.generate({
+            bindto: '#chart',
 
-          padding: {
-            top: 50
-          },
+            padding: {
+              top: 50
+            },
 
-          data: {
-            columns: COLUMNS
-          },
+            data: {
+              columns: COLUMNS
+            },
 
-          transition: {
-            duration: 750
-          },
+            transition: {
+              duration: 750
+            },
 
-          axis: {
-            y: {
-              label: {
-                text: "milliseconds",
-                position: "outer-middle"
+            axis: {
+              y: {
+                label: {
+                  text: "milliseconds",
+                  position: "outer-middle"
+                }
               }
             }
+        })
+
+        function round(n) {
+          return Math.round(n * 100) / 100
+        }
+
+        function mean(values) {
+          return round(values.reduce(function(acc, n) {
+            return acc + n
+          }, 0) / values.length)
+        }
+
+        function median(values) {
+          values.sort(function(a, b) { return a - b })
+
+          var result, half = Math.floor(values.length / 2)
+
+          if (values.length % 2) {
+            result = values[half]
+          } else {
+            result = (values[half - 1] + values[half]) / 2.0
           }
-      })
+
+          return round(result)
+        }
+
+        function variance(values) {
+          var m = mean(values)
+
+          return round(values.reduce(function(acc, n) {
+            return acc + (m - n) * (m - n)
+          }, 0) / values.length)
+        }
+
+        function tablify(columns, functions) {
+          var tbody = document.getElementById('tbody')
+
+          columns.forEach(function (col) {
+            var tr = document.createElement('tr'),
+                th = document.createElement('th')
+
+            th.textContent = col[0]
+            tr.appendChild(th)
+
+            functions.forEach(function (f) {
+              var td = document.createElement('td')
+              td.textContent = f(col.slice(1))
+              tr.appendChild(td)
+            })
+
+            tbody.appendChild(tr)
+          })
+        }
+
+        tablify(COLUMNS, [mean, median, variance])
       </script>
    </body>
 </html>
