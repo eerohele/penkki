@@ -2,6 +2,9 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.5.2 - [Unreleased]
+- Start x-axis from 1 instead of 0 in HTML output
+
 ## 0.5.1 - 2016-02-25
 - Add missing "ms" suffix to HTML table
 
