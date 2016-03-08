@@ -2,7 +2,10 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-## 0.5.2 - [Unreleased]
+## 0.5.3 - 2016-03-08
+- Remove "ms" suffix from variance column
+
+## 0.5.2 - 2016-03-01
 - Start x-axis from 1 instead of 0 in HTML output
 
 ## 0.5.1 - 2016-02-25
