@@ -32,7 +32,7 @@
           padding: 0 1em;
         }
 
-        td:after {
+        .mean:after, .median:after {
           color: #999;
           content: 'ms';
         }
@@ -157,6 +157,7 @@
 
             functions.forEach(function (f) {
               var td = document.createElement('td')
+              td.setAttribute('class', f.name)
               td.textContent = f(col.slice(1))
               tr.appendChild(td)
             })
