@@ -22,10 +22,26 @@
           color: #444;
         }
 
+        tfoot th {
+          border-top: 1px solid #eee;
+          font-weight: normal;
+          padding-top: .5em;
+        }
+
+        tfoot th:first-child {
+          border: none;
+          color: #999;
+          text-align: right;
+        }
+
         tbody th {
           font-family: "Monaco", "Consolas", monospace;
           font-weight: normal;
           text-align: right;
+        }
+
+        tbody tr:last-child td, tbody tr:last-child th {
+          padding-bottom: .25em;
         }
 
         td, th {
@@ -58,6 +74,15 @@
       <div id="chart"></div>
 
       <table>
+        <tfoot>
+          <tr>
+            <th>Δ</th>
+            <th class="mean"/>
+            <th class="median"/>
+            <th class="variance"/>
+          </tr>
+        </tfoot>
+
         <thead>
           <tr>
             <th/>
@@ -145,24 +170,55 @@
           }, 0) / values.length)
         }
 
-        function tablify(columns, functions) {
-          var tbody = document.getElementById('tbody')
+        function calculateDiffs(result) {
+          return result.reduce(function (acc, x) {
+            for (prop in acc) {
+              if (acc.hasOwnProperty(prop)) {
+                acc[prop] = Math.abs(round(x[prop] - acc[prop]))
+              }
+            }
 
-          columns.forEach(function (col) {
+            return acc
+          }, { mean: 0, median: 0, variance: 0 })
+        }
+
+        function calculate(columns, functions) {
+          return columns.map(function (col) {
+            return functions.reduce(function (acc, f) {
+              acc[f.name] = f(col.slice(1))
+              return acc
+            }, {})
+          })
+        }
+
+        function setDiffs(diffs) {
+          document.querySelector('tfoot .mean').textContent = diffs.mean
+          document.querySelector('tfoot .median').textContent = diffs.median
+          document.querySelector('tfoot .variance').textContent = diffs.variance
+        }
+
+        function tablify(columns, functions) {
+          var result = calculate(columns, functions)
+
+          setDiffs(calculateDiffs(result))
+
+          result.forEach(function (result, i) {
             var tr = document.createElement('tr'),
                 th = document.createElement('th')
 
-            th.textContent = col[0]
+            th.textContent = columns[i][0]
             tr.appendChild(th)
 
-            functions.forEach(function (f) {
-              var td = document.createElement('td')
-              td.setAttribute('class', f.name)
-              td.textContent = f(col.slice(1))
-              tr.appendChild(td)
-            })
+            for (value in result) {
+              if (result.hasOwnProperty(value)) {
+                var td = document.createElement('td')
+                td.textContent = result[value]
+                td.setAttribute('class', value)
+                tr.appendChild(td)
+              }
+            }
 
-            tbody.appendChild(tr)
+            document.getElementById('tbody').appendChild(tr)
           })
         }
 
